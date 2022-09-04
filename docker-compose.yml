@@ -1,0 +1,23 @@
+# ファイルのフォーマットバージョン
+version: "3.9"
+
+# サービス単位でコンテナ管理
+services:
+  postgres-container:
+    # DockerリポジトリからPullするDockerイメージ
+    image: postgres:13.4
+    # ポート番号指定
+    ports:
+      - 5432:5432
+    # サービス(コンテナ)内の環境変数を設定
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      # 本来、PostgreSQLのデータは/var/lib/postgresql/data直下に作成されるが、
+      # Dockerdaで/var/lib/postgresql/dataにデータを作成しようとすると失敗する。
+      # そのため、アドホックではあるがデータ作成ディレクトリを1層深くしている。
+      PGDATA: /var/lib/postgresql/data/pgdata
+    # ホストOS(PC)上にdbボリュームを定義
+    # PostgresSQLのコンテナの/var/lib/postgresql/data/pgdataというディレクトリを、dbボリュームにマウント
+    volumes:
+      - ./db:/var/lib/postgresql/data
